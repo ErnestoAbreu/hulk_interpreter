@@ -1,4 +1,5 @@
-﻿
+﻿namespace hulk_interpreter;
+
 class Program
 {
     static void Main(string[] args)
@@ -12,6 +13,12 @@ class Program
     }
 
     static void Run(string code){
-       
+        Lexer lexer = new Lexer(code);
+        List<Token> tokens = lexer.GetTokens();
+
+        foreach (Token token in tokens)
+        {
+            Console.WriteLine(token);
+        }
     }
 }
