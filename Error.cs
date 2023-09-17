@@ -9,9 +9,9 @@ enum ErrorType
 
 static class Error
 {
-    static bool hadError = false;
+    public static bool hadError = false;
 
-    static void Report(ErrorType type, string message)
+    public static void Report(ErrorType type, string message)
     {
         Console.WriteLine(type + ": " + message);
         hadError = true;
