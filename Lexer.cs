@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace hulk_interpreter;
 
 public class Lexer
@@ -9,10 +7,27 @@ public class Lexer
     private int current = 0;
     private bool Scanned = false;
     private List<Token> Tokens = new List<Token>();
+    private Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>();
 
     public Lexer(string code)
     {
-        this.code = code;
+        this.code = code + "#";
+        keywords["true"] = TokenType.TRUE;
+        keywords[key: "false"] = TokenType.FALSE;
+        keywords["let"] = TokenType.LET;
+        keywords["in"] = TokenType.IN;
+        keywords["if"] = TokenType.IF;
+        keywords["else"] = TokenType.ELSE;
+        keywords["function"] = TokenType.FUNCTION;
+        keywords["print"] = TokenType.PRINT;
+        keywords["sqrt"] = TokenType.SQRT;
+        keywords["sin"] = TokenType.SIN;
+        keywords["cos"] = TokenType.COS;
+        keywords["exp"] = TokenType.EXP;
+        keywords["log"] = TokenType.LOG;
+        keywords["rand"] = TokenType.RAND;
+        keywords["PI"] = TokenType.PI;
+        keywords["E"] = TokenType.EULER;
     }
 
     private Token Match(char character)
@@ -70,9 +85,68 @@ public class Lexer
         return token;
     }
 
-    private Token NextToken()
+    private Token StringMatch()
     {
         Token token = new Token(TokenType.EOF, "");
+
+        while (code[current] != '"' && current < code.Length)
+            current++;
+
+        if (current == code.Length)
+            Error.Report(ErrorType.LEXICAL_ERROR, code.Substring(start, current - start + 1));
+        else
+            token = new Token(TokenType.STRING, code.Substring(start, current - start + 1));
+
+        return token;
+    }
+
+    private Token NumberMatch()
+    {
+        Token token = new Token(TokenType.EOF, "");
+
+        bool error = false;
+        while (
+            Char.IsDigit(code[current + 1])
+            || Char.IsLetter(code[current + 1])
+            || code[current] == '.'
+        )
+        {
+            current++;
+            if (Char.IsLetter(code[current + 1]))
+                error = true;
+        }
+        if (error || code[current] == '.')
+            Error.Report(ErrorType.LEXICAL_ERROR, code.Substring(start, current - start + 1));
+        else
+            token = new Token(TokenType.NUMBER, code.Substring(start, current - start + 1));
+
+        return token;
+    }
+
+    private Token IdentifierMatch()
+    {
+        Token token = new Token(TokenType.EOF, "");
+
+        while (
+            Char.IsDigit(code[current + 1])
+            || Char.IsLetter(code[current + 1])
+            || code[current] == '_'
+        )
+        {
+            current++;
+        }
+
+        token = new Token(TokenType.NUMBER, code.Substring(start, current - start + 1));
+
+        return token;
+    }
+
+    private Token NextToken()
+    {
+        Token token = new Token(TokenType.EOF, "error");
+
+        while (code[current] == ' ')
+            start = ++current;
 
         switch (code[current])
         {
@@ -85,9 +159,9 @@ public class Lexer
             case ',':
                 token = new Token(TokenType.COMMA, ",");
                 break;
-            case '.':
-                token = new Token(TokenType.DOT, ".");
-                break;
+            // case '.':
+            //     token = new Token(TokenType.DOT, ".");
+            //     break;
             case ';':
                 token = new Token(TokenType.SEMICOLON, ";");
                 break;
@@ -127,7 +201,24 @@ public class Lexer
             case '<':
                 token = Match('<');
                 break;
+            case '"':
+                token = StringMatch();
+                break;
         }
+
+        if (Char.IsDigit(code[current]))
+            token = NumberMatch();
+
+        if (Char.IsLetter(code[current]))
+            token = IdentifierMatch();
+
+        if(code[current] == '#')
+            token.Lexeme = "#";
+
+        if (token.Lexeme == "error")
+            Error.Report(ErrorType.LEXICAL_ERROR, code.Substring(start, 1));
+
+        start = ++current;
 
         return token;
     }
