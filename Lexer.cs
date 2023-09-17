@@ -144,4 +144,14 @@ public class Lexer
 
         return Tokens;
     }
+
+    public override string ToString()
+    {
+        string tokens = "";
+
+        foreach (Token token in Tokens)
+            tokens += token.ToString();
+
+        return tokens;
+    }
 }
