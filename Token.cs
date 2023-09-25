@@ -65,7 +65,7 @@ public class Token
 {
     public TokenType Type;
     public string Lexeme;
-    private object literal = null!;
+    public object literal = null!;
 
     public Token(TokenType type, string lexeme, object literal)
     {

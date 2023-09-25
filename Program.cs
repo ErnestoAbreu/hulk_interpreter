@@ -22,9 +22,18 @@ class Program
         Lexer lexer = new Lexer(code);
         List<Token> tokens = lexer.GetTokens();
 
-        foreach (Token token in tokens)
-        {
-            Console.WriteLine(token);
-        }
+        // foreach (Token token in tokens)
+        // {
+        //     Console.WriteLine(token);
+        // }
+
+        if (Error.hadError)
+            return;
+
+        Parser parser = new Parser(tokens);
+        Expression Expr = parser.Parse();
+
+        if (Error.hadError)
+            return;
     }
 }

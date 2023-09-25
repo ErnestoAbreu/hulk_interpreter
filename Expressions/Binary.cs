@@ -6,7 +6,7 @@ class Binary : Expression
     private TokenType _operator;
     private Expression right;
 
-    Binary(Expression left, TokenType _operator, Expression right)
+    public Binary(Expression left, TokenType _operator, Expression right)
     {
         this.left = left;
         this._operator = _operator;
