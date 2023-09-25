@@ -65,7 +65,14 @@ public class Token
 {
     public TokenType Type;
     public string Lexeme;
+    private object literal = null!;
 
+    public Token(TokenType type, string lexeme, object literal)
+    {
+        this.Type = type;
+        this.Lexeme = lexeme;
+        this.literal = literal;
+    }
     public Token(TokenType type, string lexeme)
     {
         this.Type = type;
