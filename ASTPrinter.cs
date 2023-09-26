@@ -7,14 +7,14 @@ public static class ASTPriter
         if (expr is Binary)
         {
             Binary binary = (Binary)expr;
-            return "[ " + Print(binary.left) + " ] " + binary._operator + " [ " + Print(binary.right) + " ]";
+            return "[ " + Print(binary.left) + " ] " + binary.token + " [ " + Print(binary.right) + " ]";
         }
 
         if (expr is Unary)
         {
             Unary unary = (Unary)expr;
 
-            return "[ " + unary._operator + " [ " + Print(unary.right) + " ]";
+            return "[ " + unary.token + " [ " + Print(unary.right) + " ]";
         }
 
         if(expr is Literal)

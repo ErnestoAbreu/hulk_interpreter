@@ -3,13 +3,13 @@ namespace hulk_interpreter;
 class Binary : Expression
 {
     public Expression left;
-    public TokenType _operator;
+    public Token token;
     public Expression right;
 
-    public Binary(Expression left, TokenType _operator, Expression right)
+    public Binary(Expression left, Token token, Expression right)
     {
         this.left = left;
-        this._operator = _operator;
+        this.token = token;
         this.right = right;
     }
 }

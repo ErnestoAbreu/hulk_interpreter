@@ -1,12 +1,12 @@
 namespace hulk_interpreter;
 class Unary : Expression
 {
-    public TokenType _operator;
+    public Token token;
     public Expression right;
 
-    public Unary(TokenType _operator, Expression right)
+    public Unary(Token token, Expression right)
     {
-        this._operator = _operator;
+        this.token = token;
         this.right = right;
     }
 }

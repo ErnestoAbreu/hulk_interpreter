@@ -12,6 +12,11 @@ public class Parser
         this.tokens = tokens;
     }
 
+    private Token GetToken()
+    {
+        return tokens[current];
+    }
+
     private new TokenType GetType()
     {
         return tokens[current].Type;
@@ -88,10 +93,10 @@ public class Parser
 
         while (Match(TokenType.EQUAL_EQUAL, TokenType.NOT_EQUAL))
         {
-            TokenType _operator = GetType();
+            Token token = GetToken();
             Advance();
             Expression right = comparison();
-            expr = new Binary(expr, _operator, right);
+            expr = new Binary(expr, token, right);
         }
 
         return expr;
@@ -105,10 +110,10 @@ public class Parser
             Match(TokenType.LESS, TokenType.LESS_EQUAL, TokenType.GREATER, TokenType.GREATER_EQUAL)
         )
         {
-            TokenType _operator = GetType();
+            Token token = GetToken();
             Advance();
             Expression right = concatenation();
-            expr = new Binary(expr, _operator, right);
+            expr = new Binary(expr, token, right);
         }
 
         return expr;
@@ -120,10 +125,10 @@ public class Parser
 
         while (Match(TokenType.AT))
         {
-            TokenType _operator = GetType();
+            Token token = GetToken();
             Advance();
             Expression right = term();
-            expr = new Binary(expr, _operator, right);
+            expr = new Binary(expr, token, right);
         }
 
         return expr;
@@ -135,10 +140,10 @@ public class Parser
 
         while (Match(TokenType.PLUS, TokenType.MINUS))
         {
-            TokenType _operator = GetType();
+            Token token = GetToken();
             Advance();
             Expression right = factor();
-            expr = new Binary(expr, _operator, right);
+            expr = new Binary(expr, token, right);
         }
 
         return expr;
@@ -150,10 +155,10 @@ public class Parser
 
         while (Match(TokenType.PRODUCT, TokenType.DIVISION))
         {
-            TokenType _operator = GetType();
+            Token token = GetToken();
             Advance();
             Expression right = power();
-            expr = new Binary(expr, _operator, right);
+            expr = new Binary(expr, token, right);
         }
 
         return expr;
@@ -165,10 +170,10 @@ public class Parser
 
         while (Match(TokenType.POWER))
         {
-            TokenType _operator = GetType();
+            Token token = GetToken();
             Advance();
             Expression right = logical();
-            expr = new Binary(expr, _operator, right);
+            expr = new Binary(expr, token, right);
         }
 
         return expr;
@@ -180,10 +185,10 @@ public class Parser
 
         while (Match(TokenType.AND, TokenType.OR))
         {
-            TokenType _operator = GetType();
+            Token token = GetToken();
             Advance();
             Expression right = unary();
-            expr = new Binary(expr, _operator, right);
+            expr = new Binary(expr, token, right);
         }
 
         return expr;
@@ -193,10 +198,10 @@ public class Parser
     {
         if (Match(TokenType.MINUS, TokenType.NOT))
         {
-            TokenType _operator = GetType();
+            Token token = GetToken();
             Advance();
             Expression right = primary();
-            return new Unary(_operator, right);
+            return new Unary(token, right);
         }
 
         return primary();
