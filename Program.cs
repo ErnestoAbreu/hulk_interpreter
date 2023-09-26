@@ -4,6 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        Console.WriteLine("[Havana University Language for Kompilers - Interpreter]");
         while (true)
         {
             Console.Write(">");
@@ -22,13 +23,13 @@ class Program
         Lexer lexer = new Lexer(code);
         List<Token> tokens = lexer.GetTokens();
 
+        if (Error.hadError)
+            return;
+
         // foreach (Token token in tokens)
         // {
         //     Console.WriteLine(token);
         // }
-
-        if (Error.hadError)
-            return;
 
         Parser parser = new Parser(tokens);
         Expression Expr = parser.Parse();

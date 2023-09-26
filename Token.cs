@@ -73,6 +73,7 @@ public class Token
         this.Lexeme = lexeme;
         this.literal = literal;
     }
+
     public Token(TokenType type, string lexeme)
     {
         this.Type = type;
