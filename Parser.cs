@@ -200,13 +200,27 @@ public class Parser
         {
             Token token = GetToken();
             Advance();
-            Expression right = primary();
+            Expression right = statement();
             return new Unary(token, right);
+        }
+
+        return statement();
+    }
+
+    private Expression statement()
+    {
+        if (Match(TokenType.IF))
+        {
+            Advance();
+            Expression condition = primary();
+            Expression ifBody = expression();
+            Consume(TokenType.ELSE);
+            Expression elseBody = expression();
+            return new IfStatement(condition, ifBody, elseBody);
         }
 
         return primary();
     }
-
     private Expression primary()
     {
         if (Match(TokenType.NUMBER, TokenType.STRING, TokenType.FALSE, TokenType.TRUE))
@@ -219,25 +233,6 @@ public class Parser
             Consume(TokenType.RIGHT_PAREN);
             return expr;
         }
-
-        // if (Match(TokenType.IF))
-        // {
-        //     Advance();
-        //     Expression condition = expression();
-        //     Expression ifBody = expression();
-        //     Consume(TokenType.ELSE);
-        //     Expression elseBody = expression();
-        //     return new IfStatement(condition, ifBody, elseBody);
-        // }
-
-        // if (Match(TokenType.LET))
-        // {
-        //     Advance();
-        //     Expression declarationBody = assing();
-        //     Consume(TokenType.IN);
-        //     Expression body = expression();
-        //     return new LetStatement(declarationBody, body);
-        // }
 
         throw new Exception(tokens[current].ToString());
     }

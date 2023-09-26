@@ -23,6 +23,12 @@ public static class ASTPriter
             return literal.literal.ToString()!;
         }
 
+        if(expr is IfStatement)
+        {
+            IfStatement ifElse = (IfStatement)expr;
+            return "if ( " + Print(ifElse.condition) + " ) \n" + "    " + Print(ifElse.ifBody) + "\nelse\n" + Print(ifElse.elseBody);
+        }
+
         return "ERROR";
     }
 }
