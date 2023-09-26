@@ -13,7 +13,7 @@ public class Lexer
     {
         this.code = code + "#";
         keywords["true"] = TokenType.TRUE;
-        keywords[key: "false"] = TokenType.FALSE;
+        keywords["false"] = TokenType.FALSE;
         keywords["let"] = TokenType.LET;
         keywords["in"] = TokenType.IN;
         keywords["if"] = TokenType.IF;
@@ -89,6 +89,7 @@ public class Lexer
     {
         Token token = new Token(TokenType.EOF, "");
 
+        current++;
         while (code[current] != '"' && current < code.Length)
             current++;
 
@@ -159,9 +160,6 @@ public class Lexer
             case ',':
                 token = new Token(TokenType.COMMA, ",");
                 break;
-            // case '.':
-            //     token = new Token(TokenType.DOT, ".");
-            //     break;
             case ';':
                 token = new Token(TokenType.SEMICOLON, ";");
                 break;
