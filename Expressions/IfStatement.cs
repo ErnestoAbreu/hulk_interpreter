@@ -2,11 +2,13 @@ namespace hulk_interpreter;
 
 class IfStatement : Expression
 {
-    private readonly Expression ifBody;
-    private readonly Expression elseBody;
+    public Expression condition;
+    public Expression ifBody;
+    public Expression elseBody;
 
-    public IfStatement(Expression ifBody, Expression elseBody)
+    public IfStatement(Expression condition, Expression ifBody, Expression elseBody)
     {
+        this.condition = condition;
         this.ifBody = ifBody;
         this.elseBody = elseBody;
     }

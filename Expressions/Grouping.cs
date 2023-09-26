@@ -2,7 +2,7 @@ namespace hulk_interpreter;
 
 class Grouping : Expression
 {
-    private Expression expr;
+    public Expression expr;
 
     Grouping(Expression expr)
     {
