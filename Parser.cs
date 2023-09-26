@@ -207,6 +207,37 @@ public class Parser
         return statement();
     }
 
+    private List<Assing> assing()
+    {
+        List<Assing> assings = new List<Assing>();
+
+        while (GetType() != TokenType.IN)
+        {
+            string identifier;
+            if (Match(TokenType.IDENTIFIER))
+            {
+                identifier = GetLexeme();
+                Advance();
+            }
+            else
+                throw new Exception("Expect identifier.");
+
+            Consume(TokenType.EQUAL);
+            Expression expr = expression();
+
+            if (Match(TokenType.COMMA))
+            {
+                Advance();
+                if (Match(TokenType.IN))
+                    throw new Exception("Expect identifier.");
+            }
+
+            assings.Add(new Assing(identifier, expr));
+        }
+
+        return assings;
+    }
+
     private Expression statement()
     {
         if (Match(TokenType.IF))
@@ -219,8 +250,18 @@ public class Parser
             return new IfStatement(condition, ifBody, elseBody);
         }
 
+        if (Match(TokenType.LET))
+        {
+            Advance();
+            List<Assing> assingBody = assing();
+            Consume(TokenType.IN);
+            Expression body = expression();
+            return new LetStatement(assingBody, body);
+        }
+
         return primary();
     }
+
     private Expression primary()
     {
         if (Match(TokenType.NUMBER, TokenType.STRING, TokenType.FALSE, TokenType.TRUE))
@@ -236,5 +277,4 @@ public class Parser
 
         throw new Exception(tokens[current].ToString());
     }
-
 }

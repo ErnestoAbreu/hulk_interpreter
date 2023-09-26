@@ -2,12 +2,13 @@ namespace hulk_interpreter;
 
 class LetStatement : Expression
 {
-    private readonly Expression declarationBody;
-    private readonly Expression body;
+    public List<Assing> assingBody;
+    public Expression body;
+    public Dictionary<string,object> variables = new Dictionary<string, object>();
 
-    public LetStatement(Expression declarationBody, Expression body)
+    public LetStatement(List<Assing> assingBody, Expression body)
     {
-        this.declarationBody = declarationBody;
+        this.assingBody = assingBody;
         this.body = body;
     }
 }
