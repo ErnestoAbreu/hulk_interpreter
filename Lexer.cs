@@ -95,7 +95,7 @@ public class Lexer
         if (current == code.Length)
             Error.Report(ErrorType.LEXICAL_ERROR, code.Substring(start, current - start + 1));
         else
-            token = new Token(TokenType.STRING, code.Substring(start, current - start + 1));
+            token = new Token(TokenType.STRING, code.Substring(start, current - start + 1), code.Substring(start, current - start + 1));
 
         return token;
     }
@@ -118,7 +118,7 @@ public class Lexer
         if (error || code[current] == '.')
             Error.Report(ErrorType.LEXICAL_ERROR, code.Substring(start, current - start + 1));
         else
-            token = new Token(TokenType.NUMBER, code.Substring(start, current - start + 1));
+            token = new Token(TokenType.NUMBER, code.Substring(start, current - start + 1), int.Parse(code.Substring(start, current - start + 1)));
 
         return token;
     }

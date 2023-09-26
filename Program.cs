@@ -35,5 +35,7 @@ class Program
 
         if (Error.hadError)
             return;
+
+        Console.WriteLine(ASTPriter.Print(Expr));
     }
 }
