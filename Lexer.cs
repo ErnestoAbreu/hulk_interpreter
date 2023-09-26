@@ -30,6 +30,25 @@ public class Lexer
         keywords["E"] = TokenType.EULER;
     }
 
+    private char GetNext()
+    {
+        return code[current + 1];
+    }
+
+    private bool Advance()
+    {
+        current++;
+        if (current == code.Length)
+            return false;
+
+        return true;
+    }
+
+    private string GetSubstr()
+    {
+        return code.Substring(start, current - start + 1);
+    }
+
     private Token Match(char character)
     {
         Token token = new Token(TokenType.EOF, "");
@@ -94,9 +113,13 @@ public class Lexer
             current++;
 
         if (current == code.Length)
-            Error.Report(ErrorType.LEXICAL_ERROR, code.Substring(start, current - start + 1));
+            Error.Report(ErrorType.LEXICAL_ERROR, GetSubstr());
         else
-            token = new Token(TokenType.STRING, code.Substring(start, current - start + 1), code.Substring(start, current - start + 1));
+            token = new Token(
+                TokenType.STRING,
+                GetSubstr(),
+                GetSubstr()
+            );
 
         return token;
     }
@@ -106,20 +129,21 @@ public class Lexer
         Token token = new Token(TokenType.EOF, "");
 
         bool error = false;
-        while (
-            Char.IsDigit(code[current + 1])
-            || Char.IsLetter(code[current + 1])
-            || code[current] == '.'
-        )
+        while (Char.IsDigit(GetNext()) || Char.IsLetter(GetNext()) || GetNext() == '.')
         {
-            current++;
-            if (Char.IsLetter(code[current + 1]))
+            if (Char.IsLetter(GetNext()))
                 error = true;
+
+            Advance();
         }
         if (error || code[current] == '.')
-            Error.Report(ErrorType.LEXICAL_ERROR, code.Substring(start, current - start + 1));
+            Error.Report(ErrorType.LEXICAL_ERROR, GetSubstr());
         else
-            token = new Token(TokenType.NUMBER, code.Substring(start, current - start + 1), int.Parse(code.Substring(start, current - start + 1)));
+            token = new Token(
+                TokenType.NUMBER,
+                GetSubstr(),
+                double.Parse(GetSubstr())
+            );
 
         return token;
     }
@@ -128,18 +152,18 @@ public class Lexer
     {
         Token token = new Token(TokenType.EOF, "");
 
-        while (
-            Char.IsDigit(code[current + 1])
-            || Char.IsLetter(code[current + 1])
-            || code[current] == '_'
-        )
+        while (Char.IsDigit(GetNext()) || Char.IsLetter(GetNext()) || GetNext() == '_')
         {
-            current++;
+            Advance();
         }
 
-        token = new Token(TokenType.NUMBER, code.Substring(start, current - start + 1));
+        foreach (string key in keywords.Keys)
+        {
+            if (GetSubstr() == key)
+                return new Token(keywords[key], GetSubstr());
+        }
 
-        return token;
+        return new Token(TokenType.IDENTIFIER, GetSubstr());
     }
 
     private Token NextToken()
@@ -210,7 +234,7 @@ public class Lexer
         if (Char.IsLetter(code[current]))
             token = IdentifierMatch();
 
-        if(code[current] == '#')
+        if (code[current] == '#')
             token.Lexeme = "#";
 
         if (token.Lexeme == "error")

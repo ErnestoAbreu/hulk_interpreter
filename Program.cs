@@ -14,6 +14,7 @@ class Program
             if (code == null)
                 break;
 
+            Error.hadError = false;
             Run(code);
         }
     }
