@@ -62,7 +62,40 @@ public class Parser
     {
         try
         {
+            if (Match(TokenType.FUNCTION))
+            {
+                Advance();
+                string identifier = "";
+
+                if (Match(TokenType.IDENTIFIER))
+                    identifier = GetLexeme();
+
+                Consume(TokenType.IDENTIFIER);
+
+                Consume(TokenType.RIGHT_PAREN);
+
+                List<string> arguments = new List<string>();
+                while (Match(TokenType.IDENTIFIER))
+                {
+                    arguments.Add(GetLexeme());
+                    Advance();
+                    if (Match(TokenType.COMMA))
+                        Advance();
+                }
+
+                Consume(TokenType.RIGHT_PAREN);
+
+                Consume(TokenType.INLINE_FUN);
+
+                Expression body = expression();
+
+                Consume(TokenType.SEMICOLON);
+
+                return new Function(identifier, arguments, body);
+            }
+
             Expression expr = expression();
+
             if (GetType() == TokenType.SEMICOLON || GetType() == TokenType.EOF)
             {
                 return expr;
@@ -257,6 +290,31 @@ public class Parser
             Consume(TokenType.IN);
             Expression body = expression();
             return new LetStatement(assingBody, body);
+        }
+
+        if (Match(TokenType.IDENTIFIER))
+        {
+            if (Functions.Contains(GetLexeme()))
+            {
+                string identifier = GetLexeme();
+                Advance();
+                Consume(TokenType.LEFT_PAREN);
+
+                List<Expression> arguments = new List<Expression>();
+                while (GetType() != TokenType.RIGHT_PAREN)
+                {
+                    Expression argument = expression();
+
+                    arguments.Add(argument);
+
+                    if (GetType() != TokenType.RIGHT_PAREN)
+                        Consume(TokenType.COMMA);
+                }
+
+                Consume(TokenType.RIGHT_PAREN);
+
+                return new Call(identifier, arguments, Functions.Get(identifier));
+            }
         }
 
         return primary();
