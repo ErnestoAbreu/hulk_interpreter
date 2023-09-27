@@ -1,4 +1,5 @@
 namespace hulk_interpreter;
+
 class Unary : Expression
 {
     public Token token;

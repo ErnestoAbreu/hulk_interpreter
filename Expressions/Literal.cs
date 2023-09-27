@@ -4,7 +4,7 @@ class Literal : Expression
 {
     public object literal;
 
-    public Literal( object literal)
+    public Literal(object literal)
     {
         this.literal = literal;
     }

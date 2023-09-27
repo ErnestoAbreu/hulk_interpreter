@@ -1,5 +1,3 @@
-using System.Data.Common;
-
 namespace hulk_interpreter;
 
 class Assing : Expression

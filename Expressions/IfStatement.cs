@@ -12,5 +12,4 @@ class IfStatement : Expression
         this.ifBody = ifBody;
         this.elseBody = elseBody;
     }
-
 }
