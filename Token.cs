@@ -47,14 +47,7 @@ public enum TokenType
     FUNCTION,
     INLINE_FUN, // =>
 
-    // Functions and Constants
-    PRINT,
-    SQRT,
-    SIN,
-    COS,
-    EXP,
-    LOG,
-    RAND,
+    //Constants
     PI,
     EULER,
 

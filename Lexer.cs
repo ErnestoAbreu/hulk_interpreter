@@ -19,13 +19,6 @@ public class Lexer
         keywords["if"] = TokenType.IF;
         keywords["else"] = TokenType.ELSE;
         keywords["function"] = TokenType.FUNCTION;
-        keywords["print"] = TokenType.PRINT;
-        keywords["sqrt"] = TokenType.SQRT;
-        keywords["sin"] = TokenType.SIN;
-        keywords["cos"] = TokenType.COS;
-        keywords["exp"] = TokenType.EXP;
-        keywords["log"] = TokenType.LOG;
-        keywords["rand"] = TokenType.RAND;
         keywords["PI"] = TokenType.PI;
         keywords["E"] = TokenType.EULER;
     }
@@ -149,10 +142,18 @@ public class Lexer
             Advance();
         }
 
+        if (GetSubstr() == "PI")
+            return new Token(TokenType.PI, GetSubstr(), Math.PI);
+
+        if (GetSubstr() == "E")
+            return new Token(TokenType.EULER, GetSubstr(), Math.E);
+
         foreach (string key in keywords.Keys)
         {
             if (GetSubstr() == key)
+            {
                 return new Token(keywords[key], GetSubstr());
+            }
         }
 
         return new Token(TokenType.IDENTIFIER, GetSubstr());
