@@ -14,7 +14,7 @@ static class Error
     public static void Report(ErrorType type, string message, int numToken = -1)
     {
         if(numToken != -1)
-            Console.WriteLine(type + ": " + message + "in token number " + numToken);
+            Console.WriteLine(type + ": " + message + " in token number " + numToken);
         else 
             Console.WriteLine(type + ": " + message);
         hadError = true;

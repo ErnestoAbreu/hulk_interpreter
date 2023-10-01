@@ -236,7 +236,7 @@ public class Parser
         {
             Token token = GetToken();
             Advance();
-            Expression right = statement();
+            Expression right = unary();
             return new Unary(token, right);
         }
 

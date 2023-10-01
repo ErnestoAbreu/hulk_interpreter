@@ -40,16 +40,15 @@ public class Evaluate
                 return binary.Calculate(GetValue(binary.left), GetValue(binary.right));
             }
 
+            case Unary:
+            {
+                Unary unary = (Unary)expr;
+                return unary.Calculate(GetValue(unary.right));
+            }
+
             default:
                 return null!;
         }
-
-        // if (expr is Unary)
-        // {
-        //     Unary unary = (Unary)expr;
-
-        //     return "[ " + unary.token + " [ " + Print(unary.right) + " ]";
-        // }
 
         // if (expr is IfStatement)
         // {
