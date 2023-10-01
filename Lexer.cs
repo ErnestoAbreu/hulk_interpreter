@@ -101,14 +101,16 @@ public class Lexer
     {
         Token token = new Token(TokenType.EOF, "");
 
-        current++;
-        while (code[current] != '"' && current < code.Length)
-            current++;
+        start++;
+        Advance();
+        while (GetNext() != '"' && current < code.Length)
+            Advance();
 
         if (current == code.Length)
             Error.Report(ErrorType.LEXICAL_ERROR, GetSubstr());
         else
             token = new Token(TokenType.STRING, GetSubstr(), GetSubstr());
+        Advance();
 
         return token;
     }
@@ -128,7 +130,11 @@ public class Lexer
         if (error || code[current] == '.')
             Error.Report(ErrorType.LEXICAL_ERROR, GetSubstr());
         else
-            token = new Token(TokenType.NUMBER, GetSubstr(), double.Parse(GetSubstr()));
+            token = new Token(
+                TokenType.NUMBER,
+                GetSubstr(),
+                double.Parse(GetSubstr().Replace('.', ','))
+            );
 
         return token;
     }

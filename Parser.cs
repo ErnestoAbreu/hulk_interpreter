@@ -74,7 +74,6 @@ public class Parser
 
                 Consume(TokenType.LEFT_PAREN);
 
-
                 List<string> arguments = new List<string>();
                 while (Match(TokenType.IDENTIFIER))
                 {
@@ -90,12 +89,11 @@ public class Parser
 
                 Functions.Add(identifier);
 
-
                 Expression body = expression();
 
                 Consume(TokenType.SEMICOLON);
 
-                Functions.Add(identifier , new Function(identifier, arguments, body) );
+                Functions.Add(identifier, new Function(identifier, arguments, body));
 
                 return Functions.Get(identifier);
             }
@@ -116,7 +114,6 @@ public class Parser
         catch (Exception e)
         {
             Error.Report(ErrorType.SYNTAX_ERROR, e.Message, current);
-            Error.hadError = true;
             return null!;
         }
     }
@@ -321,7 +318,7 @@ public class Parser
 
                 return new Call(identifier, arguments, Functions.Get(identifier));
             }
-            
+
             Variable expr = new Variable(GetLexeme());
             Advance();
             return expr;
@@ -332,7 +329,16 @@ public class Parser
 
     private Expression primary()
     {
-        if (Match(TokenType.NUMBER, TokenType.STRING, TokenType.FALSE, TokenType.TRUE, TokenType.PI, TokenType.EULER))
+        if (
+            Match(
+                TokenType.NUMBER,
+                TokenType.STRING,
+                TokenType.FALSE,
+                TokenType.TRUE,
+                TokenType.PI,
+                TokenType.EULER
+            )
+        )
             return new Literal(tokens[Advance()].literal);
 
         if (Match(TokenType.LEFT_PAREN))

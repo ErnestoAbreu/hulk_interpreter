@@ -1,4 +1,6 @@
-﻿namespace hulk_interpreter;
+﻿using System.Data;
+
+namespace hulk_interpreter;
 
 class Program
 {
@@ -6,6 +8,7 @@ class Program
     {
         Functions.Init();
         Console.WriteLine("[Havana University Language for Kompilers - Interpreter]");
+
         while (true)
         {
             Console.Write(">");
@@ -34,11 +37,14 @@ class Program
         // }
 
         Parser parser = new Parser(tokens);
-        Expression Expr = parser.Parse();
+        Expression ast = parser.Parse();
 
         if (Error.hadError)
             return;
 
         // Console.WriteLine(ASTPriter.Print(Expr));
+
+        Evaluate evaluate = new Evaluate(ast);
+        Console.WriteLine(evaluate.Run());
     }
 }
