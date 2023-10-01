@@ -13,4 +13,20 @@ static class Functions
     {
         return functions[name];
     }
+
+    public static void Add(string name, Function function = null!)
+    {
+        functions[name] = function;
+    }
+
+    public static void Init()
+    {
+        Add("print");
+        Add("sqrt");
+        Add("sin");
+        Add("cos");
+        Add("exp");
+        Add("log");
+        Add("rand");
+    }
 }

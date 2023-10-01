@@ -72,7 +72,8 @@ public class Parser
 
                 Consume(TokenType.IDENTIFIER);
 
-                Consume(TokenType.RIGHT_PAREN);
+                Consume(TokenType.LEFT_PAREN);
+
 
                 List<string> arguments = new List<string>();
                 while (Match(TokenType.IDENTIFIER))
@@ -87,11 +88,16 @@ public class Parser
 
                 Consume(TokenType.INLINE_FUN);
 
+                Functions.Add(identifier);
+
+
                 Expression body = expression();
 
                 Consume(TokenType.SEMICOLON);
 
-                return new Function(identifier, arguments, body);
+                Functions.Add(identifier , new Function(identifier, arguments, body) );
+
+                return Functions.Get(identifier);
             }
 
             Expression expr = expression();
@@ -102,14 +108,14 @@ public class Parser
             }
             else
             {
-                Error.Report(ErrorType.SYNTAX_ERROR, "invalid syntax in " + GetLexeme());
+                Error.Report(ErrorType.SYNTAX_ERROR, "invalid syntax in " + GetLexeme(), current);
                 Error.hadError = true;
                 return null!;
             }
         }
         catch (Exception e)
         {
-            Error.Report(ErrorType.SYNTAX_ERROR, e.Message);
+            Error.Report(ErrorType.SYNTAX_ERROR, e.Message, current);
             Error.hadError = true;
             return null!;
         }
@@ -117,7 +123,22 @@ public class Parser
 
     private Expression expression()
     {
-        return equality();
+        return logical();
+    }
+
+    private Expression logical()
+    {
+        Expression expr = equality();
+
+        while (Match(TokenType.AND, TokenType.OR))
+        {
+            Token token = GetToken();
+            Advance();
+            Expression right = equality();
+            expr = new Binary(expr, token, right);
+        }
+
+        return expr;
     }
 
     private Expression equality()
@@ -199,24 +220,9 @@ public class Parser
 
     private Expression power()
     {
-        Expression expr = logical();
-
-        while (Match(TokenType.POWER))
-        {
-            Token token = GetToken();
-            Advance();
-            Expression right = logical();
-            expr = new Binary(expr, token, right);
-        }
-
-        return expr;
-    }
-
-    private Expression logical()
-    {
         Expression expr = unary();
 
-        while (Match(TokenType.AND, TokenType.OR))
+        while (Match(TokenType.POWER))
         {
             Token token = GetToken();
             Advance();
@@ -315,6 +321,10 @@ public class Parser
 
                 return new Call(identifier, arguments, Functions.Get(identifier));
             }
+            
+            Variable expr = new Variable(GetLexeme());
+            Advance();
+            return expr;
         }
 
         return primary();
@@ -322,14 +332,16 @@ public class Parser
 
     private Expression primary()
     {
-        if (Match(TokenType.NUMBER, TokenType.STRING, TokenType.FALSE, TokenType.TRUE))
+        if (Match(TokenType.NUMBER, TokenType.STRING, TokenType.FALSE, TokenType.TRUE, TokenType.PI, TokenType.EULER))
             return new Literal(tokens[Advance()].literal);
 
         if (Match(TokenType.LEFT_PAREN))
         {
             Advance();
             Expression expr = expression();
+            // System.Console.WriteLine("error");
             Consume(TokenType.RIGHT_PAREN);
+            // System.Console.WriteLine("error");
             return expr;
         }
 

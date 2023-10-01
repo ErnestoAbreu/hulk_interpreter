@@ -4,6 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        Functions.Init();
         Console.WriteLine("[Havana University Language for Kompilers - Interpreter]");
         while (true)
         {
@@ -38,6 +39,6 @@ class Program
         if (Error.hadError)
             return;
 
-        Console.WriteLine(ASTPriter.Print(Expr));
+        // Console.WriteLine(ASTPriter.Print(Expr));
     }
 }
