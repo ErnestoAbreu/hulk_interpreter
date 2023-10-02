@@ -35,6 +35,8 @@ class Binary : Expression
                 return Or(valueLeft, valueRight);
             case TokenType.EQUAL_EQUAL:
                 return Equal_Equal(valueLeft, valueRight);
+            case TokenType.NOT_EQUAL:
+                return Not_Equal(valueLeft, valueRight);
             case TokenType.LESS_EQUAL:
                 return Less_Equal(valueLeft, valueRight);
             case TokenType.GREATER_EQUAL:
@@ -160,8 +162,20 @@ class Binary : Expression
 
     private static object Equal_Equal(object valueLeft, object valueRight)
     {
-        if (valueLeft is double && valueRight is double)
-            return (double)valueLeft >= (double)valueRight;
+        // if (valueLeft is double && valueRight is double)
+            // return (double)valueLeft == (double)valueRight;
+        return valueLeft.Equals(valueRight);
+
+        throw new Exception(
+            "Operator == cannot be used between " + valueLeft + " and " + valueRight
+        );
+    }
+    
+    private static object Not_Equal(object valueLeft, object valueRight)
+    {
+        // if (valueLeft is double && valueRight is double)
+            // return (double)valueLeft == (double)valueRight;
+        return !valueLeft.Equals(valueRight);
 
         throw new Exception(
             "Operator == cannot be used between " + valueLeft + " and " + valueRight

@@ -5,7 +5,6 @@ public class Call : Expression
     public string identifier;
     public List<Expression> arguments;
     public Function function;
-    private Dictionary<string, object> value = new Dictionary<string, object>();
 
     public Call(string identifier, List<Expression> arguments, Function function)
     {

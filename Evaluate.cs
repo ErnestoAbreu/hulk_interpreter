@@ -65,52 +65,20 @@ public class Evaluate
                 return "Function has been declarated correctly";
             }
 
+            case IfStatement:
+            {
+                IfStatement ifElse = (IfStatement)expr;
+                return ifElse.Calculate(value);
+            }
+
+            case LetStatement:
+            {
+                LetStatement letStatement = (LetStatement)expr;
+                return letStatement.Calculate(value);
+            }
+
             default:
                 return null!;
         }
-
-        // if (expr is IfStatement)
-        // {
-        //     IfStatement ifElse = (IfStatement)expr;
-        //     return "if ( "
-        //         + Print(ifElse.condition)
-        //         + " ) \n"
-        //         + Print(ifElse.ifBody)
-        //         + "\nelse\n"
-        //         + Print(ifElse.elseBody);
-        // }
-
-        // if (expr is Assing)
-        // {
-        //     Assing assing = (Assing)expr;
-        //     return Print(assing.value);
-        // }
-
-        // if (expr is Variable)
-        // {
-        //     Variable variable = (Variable)expr;
-        //     return variable.name;
-        // }
-
-        // if (expr is LetStatement)
-        // {
-        //     LetStatement letStatement = (LetStatement)expr;
-
-        //     string str = "let ";
-
-        //     foreach (Assing assing in letStatement.assingBody)
-        //         str += assing.identifier + " = " + Print(assing) + ", ";
-
-        //     str += " in ";
-
-        //     return str + Print(letStatement.body);
-        // }
-
-        // if (expr is Function)
-        // {
-        //     return "Function has been declarated correctly";
-        // }
-
-        // return "Unexpected error";
     }
 }

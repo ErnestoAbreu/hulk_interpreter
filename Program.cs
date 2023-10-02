@@ -46,7 +46,7 @@ class Program
 
         Evaluate evaluate = new Evaluate(ast);
         object Output = evaluate.Run();
-        if(Output != null)
+        if (Output != null)
             Console.WriteLine(Output);
     }
 }

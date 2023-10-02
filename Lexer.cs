@@ -12,15 +12,11 @@ public class Lexer
     public Lexer(string code)
     {
         this.code = code + "#";
-        keywords["true"] = TokenType.TRUE;
-        keywords["false"] = TokenType.FALSE;
         keywords["let"] = TokenType.LET;
         keywords["in"] = TokenType.IN;
         keywords["if"] = TokenType.IF;
         keywords["else"] = TokenType.ELSE;
         keywords["function"] = TokenType.FUNCTION;
-        keywords["PI"] = TokenType.PI;
-        keywords["E"] = TokenType.EULER;
     }
 
     private char GetNext()
@@ -147,6 +143,12 @@ public class Lexer
         {
             Advance();
         }
+
+        if (GetSubstr() == "true")
+            return new Token(TokenType.TRUE, GetSubstr(), true);
+
+        if (GetSubstr() == "false")
+            return new Token(TokenType.FALSE, GetSubstr(), false);
 
         if (GetSubstr() == "PI")
             return new Token(TokenType.PI, GetSubstr(), Math.PI);
