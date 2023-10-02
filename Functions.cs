@@ -19,6 +19,11 @@ static class Functions
         functions[name] = function;
     }
 
+    public static void Erase(string name)
+    {
+        functions.Remove(name);
+    }
+
     public static void Init()
     {
         Add("print");

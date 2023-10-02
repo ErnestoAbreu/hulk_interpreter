@@ -4,11 +4,13 @@ namespace hulk_interpreter;
 
 public class Evaluate
 {
-    public Expression ast;
+    private Expression ast;
+    private Dictionary<string, object> value;
 
-    public Evaluate(Expression ast)
+    public Evaluate(Expression ast, Dictionary<string, object> value = null!)
     {
         this.ast = ast;
+        this.value = value;
     }
 
     public object Run()
@@ -24,7 +26,7 @@ public class Evaluate
         }
     }
 
-    public object GetValue(Expression expr)
+    private object GetValue(Expression expr)
     {
         switch (expr)
         {
@@ -32,6 +34,12 @@ public class Evaluate
             {
                 Literal literal = (Literal)expr;
                 return literal.literal;
+            }
+
+            case Variable:
+            {
+                Variable variable = (Variable)expr;
+                return value[variable.name];
             }
 
             case Binary:
@@ -44,6 +52,17 @@ public class Evaluate
             {
                 Unary unary = (Unary)expr;
                 return unary.Calculate(GetValue(unary.right));
+            }
+
+            case Call:
+            {
+                Call call = (Call)expr;
+                return call.Calculate(value);
+            }
+
+            case Function:
+            {
+                return "Function has been declarated correctly";
             }
 
             default:
@@ -85,18 +104,6 @@ public class Evaluate
         //     str += " in ";
 
         //     return str + Print(letStatement.body);
-        // }
-
-        // if (expr is Call)
-        // {
-        //     Call call = (Call)expr;
-
-        //     string str = call.identifier + "( ";
-
-        //     foreach (Expression arg in call.arguments)
-        //         str += Print(arg) + ", ";
-
-        //     return str + " )";
         // }
 
         // if (expr is Function)

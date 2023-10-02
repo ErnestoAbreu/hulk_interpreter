@@ -60,6 +60,7 @@ public class Parser
 
     public Expression Parse()
     {
+        string delete = "";
         try
         {
             if (Match(TokenType.FUNCTION))
@@ -87,7 +88,12 @@ public class Parser
 
                 Consume(TokenType.INLINE_FUN);
 
+                if (Functions.Contains(identifier))
+                {
+                    throw new Exception("Functions cannot be redefined.");
+                }
                 Functions.Add(identifier);
+                delete = identifier;
 
                 Expression body = expression();
 
@@ -113,6 +119,9 @@ public class Parser
         }
         catch (Exception e)
         {
+            if (delete != "")
+                Functions.Erase(delete);
+
             Error.Report(ErrorType.SYNTAX_ERROR, e.Message, current);
             return null!;
         }

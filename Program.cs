@@ -42,9 +42,11 @@ class Program
         if (Error.hadError)
             return;
 
-        // Console.WriteLine(ASTPriter.Print(Expr));
+        // Console.WriteLine(ASTPriter.Print(ast));
 
         Evaluate evaluate = new Evaluate(ast);
-        Console.WriteLine(evaluate.Run());
+        object Output = evaluate.Run();
+        if(Output != null)
+            Console.WriteLine(Output);
     }
 }
