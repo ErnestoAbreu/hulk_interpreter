@@ -16,9 +16,9 @@ public class Call : Expression
     public object Calculate(Dictionary<string, object> value)
     {
         List<object> values = new List<object>();
-        foreach (Expression expr in arguments)
+        foreach (Expression args in arguments)
         {
-            Evaluate param = new Evaluate(expr, value);
+            Evaluate param = new Evaluate(args, value);
             values.Add(param.Run());
         }
 
@@ -45,6 +45,8 @@ public class Call : Expression
 
     private object Fun(List<object> args)
     {
+        function = Functions.Get(identifier).Copy();
+
         if (args.Count == function.arguments.Count)
         {
             int counter = 0;

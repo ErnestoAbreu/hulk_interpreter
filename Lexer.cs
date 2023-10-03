@@ -100,7 +100,11 @@ public class Lexer
         start++;
         Advance();
         while (GetNext() != '"' && current < code.Length)
+        {
+            if(GetNext() == '\\')
+                Advance();
             Advance();
+        }
 
         if (current == code.Length)
             Error.Report(ErrorType.LEXICAL_ERROR, GetSubstr());
