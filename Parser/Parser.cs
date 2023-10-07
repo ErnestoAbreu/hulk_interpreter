@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace hulk_interpreter;
 
 public class Parser
@@ -12,21 +10,25 @@ public class Parser
         this.tokens = tokens;
     }
 
+    /* Devuelve el token actual */
     private Token GetToken()
     {
         return tokens[current];
     }
 
+    /* Devuelve el tipo del token actual */
     private new TokenType GetType()
     {
         return tokens[current].Type;
     }
 
+    /* Devuelve la cadena de caracteres del token actual */
     private string GetLexeme()
     {
         return tokens[current].Lexeme;
     }
 
+    /* Devuelve verdadero si alguno de los tipos que pasan por parametros coincide con el tipo actual */
     private bool Match(params TokenType[] tokentypes)
     {
         if (GetType() == TokenType.EOF)
@@ -39,6 +41,7 @@ public class Parser
         return false;
     }
 
+    /* Avanza al token siguiente */
     private int Advance()
     {
         if (GetType() != TokenType.EOF)
@@ -47,15 +50,13 @@ public class Parser
         return current - 1;
     }
 
-    private int Consume(TokenType type)
+    /* Verifica si el tipo actual coincide con el tipo esperado */
+    private int Consume(TokenType type, string lexeme)
     {
         if (Match(type))
-        {
-            Advance();
-            return current - 1;
-        }
+            return Advance();
 
-        throw new Exception("Expect " + type + " after expression.");
+        throw new Error(ErrorType.SYNTAX_ERROR, "Expect '" + lexeme + "' in", current, tokens);
     }
 
     public Expression Parse()
@@ -71,9 +72,9 @@ public class Parser
                 if (Match(TokenType.IDENTIFIER))
                     identifier = GetLexeme();
 
-                Consume(TokenType.IDENTIFIER);
+                Consume(TokenType.IDENTIFIER, "a name");
 
-                Consume(TokenType.LEFT_PAREN);
+                Consume(TokenType.LEFT_PAREN, "(");
 
                 List<string> arguments = new List<string>();
                 while (Match(TokenType.IDENTIFIER))
@@ -84,9 +85,9 @@ public class Parser
                         Advance();
                 }
 
-                Consume(TokenType.RIGHT_PAREN);
+                Consume(TokenType.RIGHT_PAREN, ")");
 
-                Consume(TokenType.INLINE_FUN);
+                Consume(TokenType.INLINE_FUN, "=>");
 
                 if (Functions.Contains(identifier))
                 {
@@ -97,7 +98,7 @@ public class Parser
 
                 Expression body = expression();
 
-                Consume(TokenType.SEMICOLON);
+                Consume(TokenType.SEMICOLON, ";");
 
                 Functions.Add(identifier, new Function(identifier, arguments, body));
 
@@ -106,25 +107,19 @@ public class Parser
 
             Expression expr = expression();
 
-            Consume(TokenType.SEMICOLON);
+            Consume(TokenType.SEMICOLON, ";");
 
             if (GetType() == TokenType.EOF)
-            {
                 return expr;
-            }
             else
-            {
-                Error.Report(ErrorType.SYNTAX_ERROR, "invalid syntax in " + GetLexeme(), current);
-                Error.hadError = true;
-                return null!;
-            }
+                throw new Error(ErrorType.SYNTAX_ERROR, "Invalid syntax in ", current, tokens);
         }
-        catch (Exception e)
+        catch (Error error)
         {
             if (delete != "")
                 Functions.Erase(delete);
 
-            Error.Report(ErrorType.SYNTAX_ERROR, e.Message, current);
+            error.Report();
             return null!;
         }
     }
@@ -267,16 +262,27 @@ public class Parser
                 Advance();
             }
             else
-                throw new Exception("Expect identifier.");
+                throw new Error(
+                    ErrorType.SYNTAX_ERROR,
+                    "Expect a variable name in",
+                    current,
+                    tokens
+                );
 
-            Consume(TokenType.EQUAL);
+            Consume(TokenType.EQUAL, "=");
             Expression expr = expression();
 
-            if (Match(TokenType.COMMA))
+            if (!Match(TokenType.IN))
             {
-                Advance();
+                Consume(TokenType.COMMA, ",");
+                
                 if (Match(TokenType.IN))
-                    throw new Exception("Expect identifier.");
+                    throw new Error(
+                        ErrorType.SYNTAX_ERROR,
+                        "Expect a variable name in",
+                        current,
+                        tokens
+                    );
             }
 
             assings.Add(new Assing(identifier, expr));
@@ -292,7 +298,7 @@ public class Parser
             Advance();
             Expression condition = primary();
             Expression ifBody = expression();
-            Consume(TokenType.ELSE);
+            Consume(TokenType.ELSE, "else");
             Expression elseBody = expression();
             return new IfStatement(condition, ifBody, elseBody);
         }
@@ -301,7 +307,7 @@ public class Parser
         {
             Advance();
             List<Assing> assingBody = assing();
-            Consume(TokenType.IN);
+            Consume(TokenType.IN, "in");
             Expression body = expression();
             return new LetStatement(assingBody, body);
         }
@@ -312,7 +318,7 @@ public class Parser
             {
                 string identifier = GetLexeme();
                 Advance();
-                Consume(TokenType.LEFT_PAREN);
+                Consume(TokenType.LEFT_PAREN, "(");
 
                 List<Expression> arguments = new List<Expression>();
                 while (GetType() != TokenType.RIGHT_PAREN)
@@ -322,10 +328,10 @@ public class Parser
                     arguments.Add(argument);
 
                     if (GetType() != TokenType.RIGHT_PAREN)
-                        Consume(TokenType.COMMA);
+                        Consume(TokenType.COMMA, ")");
                 }
 
-                Consume(TokenType.RIGHT_PAREN);
+                Consume(TokenType.RIGHT_PAREN, ")");
 
                 return new Call(identifier, arguments, Functions.Get(identifier));
             }
@@ -356,12 +362,10 @@ public class Parser
         {
             Advance();
             Expression expr = expression();
-            // System.Console.WriteLine("error");
-            Consume(TokenType.RIGHT_PAREN);
-            // System.Console.WriteLine("error");
+            Consume(TokenType.RIGHT_PAREN, ")");
             return expr;
         }
 
-        throw new Exception(tokens[current].ToString());
+        throw new Error(ErrorType.SYNTAX_ERROR, "Invalid syntax in", current, tokens);
     }
 }

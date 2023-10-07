@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 namespace hulk_interpreter;
 
 public class Evaluate
@@ -19,9 +17,9 @@ public class Evaluate
         {
             return GetValue(ast);
         }
-        catch (Exception e)
+        catch (Error error)
         {
-            Error.Report(ErrorType.SEMANTIC_ERROR, e.Message);
+            error.Report();
             return null!;
         }
     }
@@ -31,51 +29,35 @@ public class Evaluate
         switch (expr)
         {
             case Literal:
-            {
                 Literal literal = (Literal)expr;
-                return literal.literal;
-            }
+                return literal.value;
 
             case Variable:
-            {
                 Variable variable = (Variable)expr;
                 return value[variable.name];
-            }
 
             case Binary:
-            {
                 Binary binary = (Binary)expr;
                 return binary.Calculate(GetValue(binary.left), GetValue(binary.right));
-            }
 
             case Unary:
-            {
                 Unary unary = (Unary)expr;
                 return unary.Calculate(GetValue(unary.right));
-            }
 
             case Call:
-            {
                 Call call = (Call)expr;
                 return call.Calculate(value);
-            }
 
             case Function:
-            {
                 return "Function has been declarated correctly";
-            }
 
             case IfStatement:
-            {
                 IfStatement ifElse = (IfStatement)expr;
                 return ifElse.Calculate(value);
-            }
 
             case LetStatement:
-            {
                 LetStatement letStatement = (LetStatement)expr;
                 return letStatement.Calculate(value);
-            }
 
             default:
                 return null!;

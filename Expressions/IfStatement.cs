@@ -25,12 +25,13 @@ class IfStatement : Expression
                 Evaluate evaluate = new Evaluate(ifBody, value);
                 return evaluate.Run();
             }
-            else { 
+            else
+            {
                 Evaluate evaluate = new Evaluate(elseBody, value);
                 return evaluate.Run();
             }
         }
 
-        throw new Exception("If condition must be a bool.");
+        throw new Error(ErrorType.SEMANTIC_ERROR, "If condition must return a boolean value.");
     }
 }

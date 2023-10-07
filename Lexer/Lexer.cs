@@ -138,12 +138,6 @@ public class Lexer
     {
         Token token = new Token(TokenType.EOF, "");
 
-        // if (GetNext() == '\"')
-        // {
-        //     Advance();
-        //     return new Token(TokenType.STRING, "", "");
-        // }
-
         start++;
 
         while (!isAtEnd() && GetNext() != '"')
@@ -158,7 +152,8 @@ public class Lexer
         {
             start--;
             current--;
-            Error.Report(ErrorType.LEXICAL_ERROR, GetSubstr() + " expect \" character");
+            Error error = new Error(ErrorType.LEXICAL_ERROR, GetSubstr() + " expect \" character");
+            error.Report();
         }
         else
         {
@@ -180,17 +175,23 @@ public class Lexer
     {
         Token token = new Token(TokenType.EOF, "");
 
-        bool error = false;
+        bool hadError = false;
         while (Char.IsDigit(GetNext()) || Char.IsLetter(GetNext()) || GetNext() == '.')
         {
             if (Char.IsLetter(GetNext()))
-                error = true;
+                hadError = true;
 
             Advance();
         }
 
-        if (error || GetCurrent() == '.')
-            Error.Report(ErrorType.LEXICAL_ERROR, "'" + GetSubstr() + "' is not a valid token.");
+        if (hadError || GetCurrent() == '.')
+        {
+            Error error = new Error(
+                ErrorType.LEXICAL_ERROR,
+                "'" + GetSubstr() + "' is not a valid token."
+            );
+            error.Report();
+        }
         else
             token = new Token(
                 TokenType.NUMBER,
@@ -234,6 +235,7 @@ public class Lexer
         return new Token(TokenType.IDENTIFIER, GetSubstr());
     }
 
+    /* Busca y devuelve el siguiente token */
     private Token NextToken()
     {
         Token token = new Token(TokenType.EOF, "error");
@@ -309,7 +311,13 @@ public class Lexer
             token.Lexeme = "#";
 
         if (token.Lexeme == "error")
-            Error.Report(ErrorType.LEXICAL_ERROR, "'" + GetSubstr() + "' is not valid token.");
+        {
+            Error error = new Error(
+                ErrorType.LEXICAL_ERROR,
+                "'" + GetSubstr() + "' is not valid token."
+            );
+            error.Report();
+        }
 
         start = Advance();
 

@@ -1,5 +1,3 @@
-using Microsoft.Win32.SafeHandles;
-
 namespace hulk_interpreter;
 
 class Unary : Expression
@@ -30,14 +28,14 @@ class Unary : Expression
         if (valueRight is double)
             return (double)valueRight * -1;
 
-        throw new Exception("Operator - cannot be used before " + valueRight);
+        throw new Error(ErrorType.SEMANTIC_ERROR, "Operator - cannot be used before " + valueRight);
     }
 
     public object Not(object valueRight)
     {
-        if(valueRight is bool)
+        if (valueRight is bool)
             return !(bool)valueRight;
-        
-        throw new Exception("Operator ! cannot be used before " + valueRight);
+
+        throw new Error(ErrorType.SEMANTIC_ERROR, "Operator ! cannot be used before " + valueRight);
     }
 }

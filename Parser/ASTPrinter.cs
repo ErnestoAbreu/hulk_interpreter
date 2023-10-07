@@ -29,7 +29,7 @@ public static class ASTPriter
         if (expr is Literal)
         {
             Literal literal = (Literal)expr;
-            return literal.literal.ToString()!;
+            return literal.value.ToString()!;
         }
 
         if (expr is IfStatement)

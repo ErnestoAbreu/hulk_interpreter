@@ -57,7 +57,8 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
             return (double)valueLeft + (double)valueRight;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator + cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -67,7 +68,8 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
             return (double)valueLeft - (double)valueRight;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator - cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -77,7 +79,8 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
             return (double)valueLeft * (double)valueRight;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator * cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -87,12 +90,13 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
         {
             if ((double)valueRight == 0)
-                throw new Exception("Division by zero");
+                throw new Error(ErrorType.SEMANTIC_ERROR, "Division by zero");
 
             return (double)valueLeft / (double)valueRight;
         }
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator / cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -102,12 +106,13 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
         {
             if ((double)valueRight == 0)
-                throw new Exception("Modulo by zero");
+                throw new Error(ErrorType.SEMANTIC_ERROR, "Modulo by zero");
 
             return (double)valueLeft % (double)valueRight;
         }
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator % cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -117,7 +122,8 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
             return Math.Pow((double)valueLeft, (double)valueRight);
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator ^ cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -127,7 +133,8 @@ class Binary : Expression
         if (valueLeft is bool && valueRight is bool)
             return (bool)valueLeft && (bool)valueRight;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator & cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -137,7 +144,8 @@ class Binary : Expression
         if (valueLeft is bool && valueRight is bool)
             return (bool)valueLeft || (bool)valueRight;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator | cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -147,7 +155,8 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
             return (double)valueLeft < (double)valueRight;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator < cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -157,7 +166,8 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
             return (double)valueLeft > (double)valueRight;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator > cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -167,7 +177,8 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
             return (double)valueLeft <= (double)valueRight;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator <= cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -177,7 +188,8 @@ class Binary : Expression
         if (valueLeft is double && valueRight is double)
             return (double)valueLeft >= (double)valueRight;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator >= cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -188,7 +200,8 @@ class Binary : Expression
         // return (double)valueLeft == (double)valueRight;
         return valueLeft.Equals(valueRight);
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator == cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -199,7 +212,8 @@ class Binary : Expression
         // return (double)valueLeft == (double)valueRight;
         return !valueLeft.Equals(valueRight);
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator == cannot be used between " + valueLeft + " and " + valueRight
         );
     }
@@ -233,7 +247,8 @@ class Binary : Expression
         }
         return str;
 
-        throw new Exception(
+        throw new Error(
+            ErrorType.SEMANTIC_ERROR,
             "Operator @ cannot be used between " + valueLeft + " and " + valueRight
         );
     }

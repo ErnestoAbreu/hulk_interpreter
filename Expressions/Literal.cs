@@ -1,11 +1,21 @@
 namespace hulk_interpreter;
 
+enum Types
+{
+    NUMBER,
+    STRING,
+    BOOL,
+    NULL
+}
+
 class Literal : Expression
 {
-    public object literal;
+    public object value;
+    Types type;
 
-    public Literal(object literal)
+    public Literal(object value, Types type = Types.NULL)
     {
-        this.literal = literal;
+        this.value = value;
+        this.type = type;
     }
 }
