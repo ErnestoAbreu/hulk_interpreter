@@ -83,7 +83,12 @@ class Binary : Expression
     private static object Div(object valueLeft, object valueRight)
     {
         if (valueLeft is double && valueRight is double)
+        {
+            if ((double)valueRight == 0)
+                throw new Exception("Division by zero");
+
             return (double)valueLeft / (double)valueRight;
+        }
 
         throw new Exception(
             "Operator / cannot be used between " + valueLeft + " and " + valueRight
@@ -163,18 +168,18 @@ class Binary : Expression
     private static object Equal_Equal(object valueLeft, object valueRight)
     {
         // if (valueLeft is double && valueRight is double)
-            // return (double)valueLeft == (double)valueRight;
+        // return (double)valueLeft == (double)valueRight;
         return valueLeft.Equals(valueRight);
 
         throw new Exception(
             "Operator == cannot be used between " + valueLeft + " and " + valueRight
         );
     }
-    
+
     private static object Not_Equal(object valueLeft, object valueRight)
     {
         // if (valueLeft is double && valueRight is double)
-            // return (double)valueLeft == (double)valueRight;
+        // return (double)valueLeft == (double)valueRight;
         return !valueLeft.Equals(valueRight);
 
         throw new Exception(
