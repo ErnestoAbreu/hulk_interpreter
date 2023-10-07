@@ -25,6 +25,8 @@ class Binary : Expression
                 return Product(valueLeft, valueRight);
             case TokenType.DIVISION:
                 return Div(valueLeft, valueRight);
+            case TokenType.MOD:
+                return Mod(valueLeft, valueRight);
             case TokenType.POWER:
                 return Power(valueLeft, valueRight);
             case TokenType.AT:
@@ -92,6 +94,21 @@ class Binary : Expression
 
         throw new Exception(
             "Operator / cannot be used between " + valueLeft + " and " + valueRight
+        );
+    }
+
+    private static object Mod(object valueLeft, object valueRight)
+    {
+        if (valueLeft is double && valueRight is double)
+        {
+            if ((double)valueRight == 0)
+                throw new Exception("Modulo by zero");
+
+            return (double)valueLeft % (double)valueRight;
+        }
+
+        throw new Exception(
+            "Operator % cannot be used between " + valueLeft + " and " + valueRight
         );
     }
 

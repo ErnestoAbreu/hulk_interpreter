@@ -215,7 +215,7 @@ public class Parser
     {
         Expression expr = power();
 
-        while (Match(TokenType.PRODUCT, TokenType.DIVISION))
+        while (Match(TokenType.PRODUCT, TokenType.DIVISION, TokenType.MOD))
         {
             Token token = GetToken();
             Advance();

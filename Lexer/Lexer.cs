@@ -264,6 +264,9 @@ public class Lexer
             case '/':
                 token = new Token(TokenType.DIVISION, "/");
                 break;
+            case '%':
+                token = new Token(TokenType.MOD, "%");
+                break;
             case '*':
                 token = new Token(TokenType.PRODUCT, "*");
                 break;

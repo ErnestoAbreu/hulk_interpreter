@@ -12,6 +12,7 @@ public enum TokenType
     MINUS,
     PLUS,
     DIVISION,
+    MOD,
     PRODUCT,
     POWER,
     AT,
