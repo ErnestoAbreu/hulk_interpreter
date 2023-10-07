@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 namespace hulk_interpreter;
 
 public class Lexer
@@ -19,102 +21,161 @@ public class Lexer
         keywords["function"] = TokenType.FUNCTION;
     }
 
+    /* Devuelve una lista con los tokens */
+    public List<Token> GetTokens()
+    {
+        while (!Scanned)
+        {
+            Tokens.Add(NextToken());
+
+            if (Tokens.Last().Type == TokenType.EOF)
+                Scanned = true;
+        }
+
+        return Tokens;
+    }
+
+    public override string ToString()
+    {
+        string tokens = "";
+
+        foreach (Token token in Tokens)
+            tokens += token;
+
+        return tokens;
+    }
+
+    /* Obtiene el siguiente caracter */
     private char GetNext()
     {
         return code[current + 1];
     }
 
-    private bool Advance()
+    /* Obtiene el caracter actual */
+    private char GetCurrent()
     {
-        current++;
-        if (current == code.Length)
-            return false;
-
-        return true;
+        return code[current];
     }
 
+    /* Avanza al siguiente caracter, devuelve el nuevo indice */
+    private int Advance()
+    {
+        current++;
+        return current;
+    }
+
+    /* Devuelve la subcadena que esta siendo evaluada */
     private string GetSubstr()
     {
         return code.Substring(start, current - start + 1);
     }
 
+    /* Devuelve verdadero si esta en el final */
+    private bool isAtEnd()
+    {
+        return GetCurrent() == '#';
+    }
+
+    /* Verifica operadores de dos caracteres */
     private Token Match(char character)
     {
         Token token = new Token(TokenType.EOF, "");
 
-        if (character == '=')
+        switch (character)
         {
-            switch (code[current + 1])
-            {
-                case '=':
-                    token = new Token(TokenType.EQUAL_EQUAL, "==");
-                    current++;
-                    break;
-                case '>':
-                    current++;
-                    token = new Token(TokenType.INLINE_FUN, "=>");
-                    break;
-                default:
-                    token = new Token(TokenType.EQUAL, "=");
-                    break;
-            }
-        }
-        if (character == '!')
-        {
-            if (code[current + 1] == '=')
-            {
-                current++;
-                token = new Token(TokenType.NOT_EQUAL, "!=");
-            }
-            else
-                token = new Token(TokenType.NOT, "!");
-        }
-        if (character == '>')
-        {
-            if (code[current + 1] == '=')
-            {
-                current++;
-                token = new Token(TokenType.GREATER_EQUAL, ">=");
-            }
-            else
-                token = new Token(TokenType.GREATER, ">");
-        }
-        if (character == '<')
-        {
-            if (code[current + 1] == '=')
-            {
-                current++;
-                token = new Token(TokenType.LESS_EQUAL, "<=");
-            }
-            else
-                token = new Token(TokenType.LESS, "<");
+            case '=':
+                switch (GetNext())
+                {
+                    case '=':
+                        token = new Token(TokenType.EQUAL_EQUAL, "==");
+                        Advance();
+                        break;
+                    case '>':
+                        token = new Token(TokenType.INLINE_FUN, "=>");
+                        Advance();
+                        break;
+                    default:
+                        token = new Token(TokenType.EQUAL, "=");
+                        break;
+                }
+                break;
+
+            case '!':
+                if (GetNext() == '=')
+                {
+                    token = new Token(TokenType.NOT_EQUAL, "!=");
+                    Advance();
+                }
+                else
+                    token = new Token(TokenType.NOT, "!");
+                break;
+
+            case '>':
+                if (GetNext() == '=')
+                {
+                    token = new Token(TokenType.GREATER_EQUAL, ">=");
+                    Advance();
+                }
+                else
+                    token = new Token(TokenType.GREATER, ">");
+                break;
+            case '<':
+                if (GetNext() == '=')
+                {
+                    token = new Token(TokenType.LESS_EQUAL, "<=");
+                    Advance();
+                }
+                else
+                    token = new Token(TokenType.LESS, "<");
+                break;
         }
 
         return token;
     }
 
+    /* Procesa las cadenas de caracteres */
     private Token StringMatch()
     {
         Token token = new Token(TokenType.EOF, "");
 
+        // if (GetNext() == '\"')
+        // {
+        //     Advance();
+        //     return new Token(TokenType.STRING, "", "");
+        // }
+
         start++;
-        Advance();
-        while (GetNext() != '"' && current < code.Length)
+
+        while (!isAtEnd() && GetNext() != '"')
         {
-            if(GetNext() == '\\')
+            if (GetNext() == '\\')
                 Advance();
+
             Advance();
         }
 
-        if (current == code.Length)
-            Error.Report(ErrorType.LEXICAL_ERROR, GetSubstr());
+        if (isAtEnd())
+        {
+            start--;
+            current--;
+            Error.Report(ErrorType.LEXICAL_ERROR, GetSubstr() + " expect \" character");
+        }
         else
-            token = new Token(TokenType.STRING, GetSubstr(), GetSubstr());
+        {
+            string literal = GetSubstr();
+            literal = literal.Replace("\\\"", "\"");
+            literal = literal.Replace("\\t", "\t");
+            literal = literal.Replace("\\n", "\n");
+            literal = literal.Replace("\\\\", "\\");
+            token = new Token(TokenType.STRING, GetSubstr(), literal);
+        }
+
         Advance();
 
         return token;
     }
 
+    /* Procesa los numeros */
     private Token NumberMatch()
     {
         Token token = new Token(TokenType.EOF, "");
@@ -127,8 +188,9 @@ public class Lexer
 
             Advance();
         }
-        if (error || code[current] == '.')
-            Error.Report(ErrorType.LEXICAL_ERROR, GetSubstr());
+
+        if (error || GetCurrent() == '.')
+            Error.Report(ErrorType.LEXICAL_ERROR, "'" + GetSubstr() + "' is not a valid token.");
         else
             token = new Token(
                 TokenType.NUMBER,
@@ -139,6 +201,7 @@ public class Lexer
         return token;
     }
 
+    /* Procesa los nombres de variables o funciones */
     private Token IdentifierMatch()
     {
         Token token = new Token(TokenType.EOF, "");
@@ -175,10 +238,10 @@ public class Lexer
     {
         Token token = new Token(TokenType.EOF, "error");
 
-        while (code[current] == ' ')
-            start = ++current;
+        while (GetCurrent() == ' ')
+            start = Advance();
 
-        switch (code[current])
+        switch (GetCurrent())
         {
             case '(':
                 token = new Token(TokenType.LEFT_PAREN, "(");
@@ -233,43 +296,20 @@ public class Lexer
                 break;
         }
 
-        if (Char.IsDigit(code[current]))
+        if (Char.IsDigit(GetCurrent()))
             token = NumberMatch();
 
-        if (Char.IsLetter(code[current]))
+        if (Char.IsLetter(GetCurrent()) || GetCurrent() == '_')
             token = IdentifierMatch();
 
-        if (code[current] == '#')
+        if (GetCurrent() == '#')
             token.Lexeme = "#";
 
         if (token.Lexeme == "error")
-            Error.Report(ErrorType.LEXICAL_ERROR, code.Substring(start, 1));
+            Error.Report(ErrorType.LEXICAL_ERROR, "'" + GetSubstr() + "' is not valid token.");
 
-        start = ++current;
+        start = Advance();
 
         return token;
-    }
-
-    public List<Token> GetTokens()
-    {
-        do
-        {
-            Tokens.Add(NextToken());
-
-            if (Tokens.Last().Type == TokenType.EOF)
-                Scanned = true;
-        } while (!Scanned);
-
-        return Tokens;
-    }
-
-    public override string ToString()
-    {
-        string tokens = "";
-
-        foreach (Token token in Tokens)
-            tokens += token.ToString();
-
-        return tokens;
     }
 }

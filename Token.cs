@@ -8,15 +8,13 @@ public enum TokenType
     COMMA,
     SEMICOLON,
 
-    // DOT,
-
     // Operations
     MINUS,
     PLUS,
-    DIVISION, // /
-    PRODUCT, // *
-    POWER, // ^
-    AT, // @
+    DIVISION,
+    PRODUCT,
+    POWER,
+    AT,
     EQUAL,
 
     // Boolean operators
@@ -45,32 +43,27 @@ public enum TokenType
     IF,
     ELSE,
     FUNCTION,
-    INLINE_FUN, // =>
+    INLINE_FUN,
 
     //Constants
     PI,
     EULER,
 
-    EOF // End Of the File
+    // End Of the File
+    EOF
 }
 
 public class Token
 {
     public TokenType Type;
     public string Lexeme;
-    public object literal = null!;
+    public object literal;
 
-    public Token(TokenType type, string lexeme, object literal)
+    public Token(TokenType type, string lexeme, object literal = null!)
     {
         this.Type = type;
         this.Lexeme = lexeme;
         this.literal = literal;
-    }
-
-    public Token(TokenType type, string lexeme)
-    {
-        this.Type = type;
-        this.Lexeme = lexeme;
     }
 
     public override string ToString()
