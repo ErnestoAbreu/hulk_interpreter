@@ -106,7 +106,9 @@ public class Parser
 
             Expression expr = expression();
 
-            if (GetType() == TokenType.SEMICOLON || GetType() == TokenType.EOF)
+            Consume(TokenType.SEMICOLON);
+
+            if (GetType() == TokenType.EOF)
             {
                 return expr;
             }
