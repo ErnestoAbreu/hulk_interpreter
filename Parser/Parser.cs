@@ -122,6 +122,11 @@ public class Parser
             error.Report();
             return null!;
         }
+        catch (Exception e)
+        {
+            System.Console.WriteLine(e.Message);
+            return null!;
+        }
     }
 
     private Expression expression()
@@ -275,7 +280,7 @@ public class Parser
             if (!Match(TokenType.IN))
             {
                 Consume(TokenType.COMMA, ",");
-                
+
                 if (Match(TokenType.IN))
                     throw new Error(
                         ErrorType.SYNTAX_ERROR,
