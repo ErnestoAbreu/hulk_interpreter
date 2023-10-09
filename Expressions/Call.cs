@@ -18,8 +18,7 @@ public class Call : Expression
         List<object> values = new List<object>();
         foreach (Expression args in arguments)
         {
-            Evaluate param = new Evaluate(args, value);
-            values.Add(param.Run());
+            values.Add(Evaluate.GetValue(args, value));
         }
 
         switch (identifier)
@@ -55,8 +54,7 @@ public class Call : Expression
                 function.value[name] = args[counter++];
             }
 
-            Evaluate body = new Evaluate(function.body, function.value);
-            return body.Run();
+            return Evaluate.GetValue(function.body, function.value);
         }
 
         throw new Error(

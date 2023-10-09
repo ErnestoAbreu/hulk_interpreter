@@ -17,18 +17,15 @@ class IfStatement : Expression
 
     public object Calculate(Dictionary<string, object> value)
     {
-        Evaluate evaluateCondition = new Evaluate(condition, value);
-        if (evaluateCondition.Run() is bool check)
+        if (Evaluate.GetValue(condition, value) is bool check)
         {
             if (check)
             {
-                Evaluate evaluate = new Evaluate(ifBody, value);
-                return evaluate.Run();
+                return Evaluate.GetValue(ifBody, value);
             }
             else
             {
-                Evaluate evaluate = new Evaluate(elseBody, value);
-                return evaluate.Run();
+                return Evaluate.GetValue(elseBody, value);
             }
         }
 

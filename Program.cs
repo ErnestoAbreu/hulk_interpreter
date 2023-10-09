@@ -2,8 +2,11 @@
 
 namespace hulk_interpreter;
 
-class Program
+static class Program
 {
+    public static int stack_limit = 9000;
+    public static int count = 0;
+
     static void Main(string[] args)
     {
         Functions.Init();
@@ -45,8 +48,16 @@ class Program
         // Console.WriteLine(ASTPriter.Print(ast));
 
         Evaluate evaluate = new Evaluate(ast);
-        object Output = evaluate.Run();
-        if (Output != null)
-            Console.WriteLine(Output);
+        try
+        {
+            count = 0;
+            object Output = evaluate.Run();
+            if (Output != null)
+                Console.WriteLine(Output);
+        }
+        catch (StackOverflowException)
+        {
+            System.Console.WriteLine("StackOverflow.");
+        }
     }
 }

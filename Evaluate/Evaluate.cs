@@ -3,19 +3,17 @@ namespace hulk_interpreter;
 public class Evaluate
 {
     private Expression ast;
-    private Dictionary<string, object> value;
 
-    public Evaluate(Expression ast, Dictionary<string, object> value = null!)
+    public Evaluate(Expression ast)
     {
         this.ast = ast;
-        this.value = value;
     }
 
     public object Run()
     {
         try
         {
-            return GetValue(ast);
+            return GetValue(ast, new Dictionary<string, object>());
         }
         catch (Error error)
         {
@@ -24,8 +22,12 @@ public class Evaluate
         }
     }
 
-    private object GetValue(Expression expr)
+    public static object GetValue(Expression expr, Dictionary<string, object> value)
     {
+        Program.count++;
+        if (Program.count > Program.stack_limit)
+            throw new StackOverflowException();
+
         switch (expr)
         {
             case Literal:
@@ -38,11 +40,14 @@ public class Evaluate
 
             case Binary:
                 Binary binary = (Binary)expr;
-                return binary.Calculate(GetValue(binary.left), GetValue(binary.right));
+                return binary.Calculate(
+                    GetValue(binary.left, value),
+                    GetValue(binary.right, value)
+                );
 
             case Unary:
                 Unary unary = (Unary)expr;
-                return unary.Calculate(GetValue(unary.right));
+                return unary.Calculate(GetValue(unary.right, value));
 
             case Call:
                 Call call = (Call)expr;

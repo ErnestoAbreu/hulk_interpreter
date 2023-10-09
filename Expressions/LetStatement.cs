@@ -25,11 +25,9 @@ class LetStatement : Expression
 
         foreach (Assing assing in assingBody)
         {
-            Evaluate evaluate = new Evaluate(assing.value, variable);
-            variable[assing.identifier] = evaluate.Run();
+            variable[assing.identifier] = Evaluate.GetValue(assing.value, variable);
         }
 
-        Evaluate evaluateBody = new Evaluate(body, variable);
-        return evaluateBody.Run();
+        return Evaluate.GetValue(body, variable);
     }
 }
