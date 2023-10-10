@@ -36,6 +36,11 @@ public class Evaluate
 
             case Variable:
                 Variable variable = (Variable)expr;
+                if (!value.ContainsKey(variable.name))
+                    throw new Error(
+                        ErrorType.SEMANTIC_ERROR,
+                        "Name " + variable.name + " is no defined."
+                    );
                 return value[variable.name];
 
             case Binary:

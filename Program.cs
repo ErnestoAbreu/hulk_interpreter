@@ -59,5 +59,9 @@ static class Program
         {
             System.Console.WriteLine("StackOverflow.");
         }
+        catch (Exception)
+        {
+            System.Console.WriteLine("Unexpected Error.");
+        }
     }
 }
