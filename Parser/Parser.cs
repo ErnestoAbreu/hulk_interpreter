@@ -107,7 +107,8 @@ public class Parser
 
             Expression expr = expression();
 
-            Consume(TokenType.SEMICOLON, ";");
+            if(current == tokens.Count - 1)
+                Consume(TokenType.SEMICOLON, ";");
 
             if (GetType() == TokenType.EOF)
                 return expr;
