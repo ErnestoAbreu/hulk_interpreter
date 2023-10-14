@@ -322,24 +322,28 @@ public class Parser
         {
             if (Functions.Contains(GetLexeme()))
             {
-                string identifier = GetLexeme();
+                string name = GetLexeme();
                 Advance();
-                Consume(TokenType.LEFT_PAREN, "(");
-
-                List<Expression> arguments = new List<Expression>();
-                while (GetType() != TokenType.RIGHT_PAREN)
+                if (Match(TokenType.LEFT_PAREN))
                 {
-                    Expression argument = expression();
+                    Consume(TokenType.LEFT_PAREN, "(");
 
-                    arguments.Add(argument);
+                    List<Expression> arguments = new List<Expression>();
+                    while (GetType() != TokenType.RIGHT_PAREN)
+                    {
+                        Expression argument = expression();
 
-                    if (GetType() != TokenType.RIGHT_PAREN)
-                        Consume(TokenType.COMMA, ")");
+                        arguments.Add(argument);
+
+                        if (GetType() != TokenType.RIGHT_PAREN)
+                            Consume(TokenType.COMMA, ")");
+                    }
+
+                    Consume(TokenType.RIGHT_PAREN, ")");
+
+                    return new Call(name, arguments, Functions.Get(name));
                 }
-
-                Consume(TokenType.RIGHT_PAREN, ")");
-
-                return new Call(identifier, arguments, Functions.Get(identifier));
+                return new Variable(name);
             }
 
             Variable expr = new Variable(GetLexeme());
