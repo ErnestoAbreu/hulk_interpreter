@@ -28,11 +28,14 @@ public class Evaluate
         if (Program.count > Program.stack_limit)
             throw new StackOverflowException();
 
+        object returnValue = null!;
+
         switch (expr)
         {
             case Literal:
                 Literal literal = (Literal)expr;
-                return literal.value;
+                returnValue = literal.value;
+                break;
 
             case Variable:
                 Variable variable = (Variable)expr;
@@ -41,36 +44,45 @@ public class Evaluate
                         ErrorType.SEMANTIC_ERROR,
                         "Name " + variable.name + " is no defined."
                     );
-                return value[variable.name];
+                returnValue = value[variable.name];
+                break;
 
             case Binary:
                 Binary binary = (Binary)expr;
-                return binary.Calculate(
+                returnValue = binary.Calculate(
                     GetValue(binary.left, value),
                     GetValue(binary.right, value)
                 );
+                break;
 
             case Unary:
                 Unary unary = (Unary)expr;
-                return unary.Calculate(GetValue(unary.right, value));
+                returnValue = unary.Calculate(GetValue(unary.right, value));
+                break;
 
             case Call:
                 Call call = (Call)expr;
-                return call.Calculate(value);
+                returnValue = call.Calculate(value);
+                break;
 
             case Function:
                 return "Function has been declarated correctly";
 
             case IfStatement:
                 IfStatement ifElse = (IfStatement)expr;
-                return ifElse.Calculate(value);
+                returnValue = ifElse.Calculate(value);
+                break;
 
             case LetStatement:
                 LetStatement letStatement = (LetStatement)expr;
-                return letStatement.Calculate(value);
+                returnValue = letStatement.Calculate(value);
+                break;
 
             default:
                 return null!;
         }
+
+        Program.count--;
+        return returnValue;
     }
 }

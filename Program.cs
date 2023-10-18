@@ -4,7 +4,7 @@ namespace hulk_interpreter;
 
 static class Program
 {
-    public static int stack_limit = 9000;
+    public static int stack_limit = 2500;
     public static int count = 0;
 
     static void Main(string[] args)
