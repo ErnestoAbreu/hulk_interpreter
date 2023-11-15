@@ -22,7 +22,15 @@ static class Program
                 break;
 
             Error.hadError = false;
-            Run(code);
+
+            try
+            {
+                Run(code);
+            }
+            catch (Exception)
+            {
+                System.Console.WriteLine("Unexpected Error.");
+            }
         }
     }
 

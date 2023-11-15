@@ -6,7 +6,7 @@ Intérprete del lenguaje de programación [HULK](https://matcom.in/hulk/) (Havan
 
 En este proyecto ha sido implementado un subconjunto del lenguaje HULK. El intérprete solo lee expresiones de una línea.
 
-La expresión leida es procesada por el **Lexer**. El **Lexer** genera un secuencia de tokens que serán procesados por el **Parser** el cual genera un árbol de sintaxis abstracta que es evualuado y luego se imprime la respuesta. Cada uno de estos procesos captura posibles errores que puede haber tenido el usuario.
+La expresión leida es procesada por el **Lexer**. El **Lexer** genera un secuencia de tokens que serán procesados por el **Parser** el cual genera un árbol de sintaxis abstracta que es evualuado y luego se imprime un resultado. Cada uno de estos procesos captura posibles errores que puede haber tenido el usuario.
 
 ![Diagrama](Diagrama.jpg)
 
